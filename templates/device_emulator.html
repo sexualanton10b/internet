@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="monitoring_data">
+    <h2>Robot 1</h2>
+    <input type="text" id="robot1_value" placeholder="Значение Robot 1" readonly>
+
+    <h2>Robot 2</h2>
+    <input type="text" id="robot2_value" placeholder="Значение Robot 2" readonly>
+
+    <h2>Smart Camera</h2>
+    <input type="text" id="smartcam_value" placeholder="Значение Smart Camera" readonly>
+
+    <h2>Signal Lamp</h2>
+    <input type="text" id="signallamp_value" placeholder="Значение Signal Lamp" readonly>
+
+    <h2>Terminal</h2>
+    <input type="text" id="terminal_value" placeholder="Значение Terminal" readonly>
+</div>
+</body>
+</html>
