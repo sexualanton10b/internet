@@ -2,6 +2,7 @@ import abc
 import random
 import json
 
+
 class Device(abc.ABC):
     def __init__(self, name):
         self.name = name
@@ -10,6 +11,7 @@ class Device(abc.ABC):
     @abc.abstractmethod
     def connect(self, *args):
         print('Connection start')
+
 
 class Robot(Device):
     def __init__(self, unit, name):
@@ -24,8 +26,15 @@ class Robot(Device):
         print(f'Connection with {self.name} success, new value is {self.value}')
         return json.dumps({'value': self.value})
 
+    def connect(self, request):
+        super().connect()
+        self.value = request.args.get('value', '')
+        print(f'Connection with {self.name} success, new value is {self.value}')
+        return json.dumps({'value': self.value})
+
     def emulate(self):
         self.value = random.randint(15, 25)
+
 
 class SmartCamera(Device):
     def __init__(self, unit, name):
@@ -40,8 +49,15 @@ class SmartCamera(Device):
         print(f'Connection with {self.name} success, new value is {self.value}')
         return json.dumps({'value': self.value})
 
+    def connect(self, request):
+        super().connect()
+        self.value = request.args.get('value', '')
+        print(f'Connection with {self.name} success, new value is {self.value}')
+        return json.dumps({'value': self.value})
+
     def emulate(self):
         self.value = random.randint(0, 100)
+
 
 class SignalLamp(Device):
     def __init__(self, unit, name):
@@ -56,8 +72,15 @@ class SignalLamp(Device):
         print(f'Connection with {self.name} success, new value is {self.value}')
         return json.dumps({'value': self.value})
 
+    def connect(self, request):
+        super().connect()
+        self.value = request.args.get('value', '')
+        print(f'Connection with {self.name} success, new value is {self.value}')
+        return json.dumps({'value': self.value})
+
     def emulate(self):
         self.value = random.randint(0, 1)  # 0 или 1, как для лампы (вкл/выкл)
+
 
 class Terminal(Device):
     def __init__(self, unit, name):
@@ -69,6 +92,12 @@ class Terminal(Device):
     def connect(self):
         super().connect()
         self.emulate()
+        print(f'Connection with {self.name} success, new value is {self.value}')
+        return json.dumps({'value': self.value})
+
+    def connect(self, request):
+        super().connect()
+        self.value = request.args.get('value', '')
         print(f'Connection with {self.name} success, new value is {self.value}')
         return json.dumps({'value': self.value})
 
