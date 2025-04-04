@@ -10,24 +10,31 @@
 <body>
 <div id="monitoring_data">
     <h2>Robot 1</h2>
-    <input type="text" id="robot1_value" placeholder="Значение Robot 1">
+    <input type="text" id="robot1_value" placeholder="Значение или on/off">
+    <label>Состояние:</label>
+    <input type="text" id="robot1_power" disabled placeholder="Состояние Robot 1">
 
     <h2>Robot 2</h2>
-    <input type="text" id="robot2_value" placeholder="Значение Robot 2">
+    <input type="text" id="robot2_value" placeholder="Значение или on/off">
+    <label>Состояние:</label>
+    <input type="text" id="robot2_power" disabled placeholder="Состояние Robot 2">
 
     <h2>Smart Camera</h2>
-    <input type="text" id="smartcam_value" placeholder="Значение Smart Camera">
+    <input type="text" id="smartcam_value" placeholder="Значение или on/off">
+    <label>Состояние:</label>
+    <input type="text" id="smartcam_power" disabled placeholder="Состояние Smart Camera">
 
     <h2>Signal Lamp</h2>
-    <input type="text" id="signallamp_value" placeholder="Значение Signal Lamp">
+    <input type="text" id="signallamp_value" placeholder="Значение или on/off">
+    <label>Состояние:</label>
+    <input type="text" id="signallamp_power" disabled placeholder="Состояние Signal Lamp">
 
     <h2>Terminal</h2>
-    <input type="text" id="terminal_value" placeholder="Значение Terminal">
-    <button onclick="sendAllData()">Отправить</button>
-    <br>
-    <labek>On/Off</labek>
-    <input type="text" id="command" disabled="disabled" placeholder="Команда">
+    <input type="text" id="terminal_value" placeholder="Значение или on/off">
+    <label>Состояние:</label>
+    <input type="text" id="terminal_power" disabled placeholder="Состояние Terminal">
 
+    <button onclick="sendAllData()">Отправить</button>
 </div>
 </body>
 </html>

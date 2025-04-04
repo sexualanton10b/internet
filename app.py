@@ -2,6 +2,8 @@ from flask import Flask, request, render_template
 from classes import *
 
 app = Flask(__name__)
+app.config['DATA_COLLECTION_ENABLED'] = False
+
 
 # Создание глобальных экземпляров устройств
 robot1 = Robot('1', 'Робот1')
