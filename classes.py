@@ -67,26 +67,21 @@ class SignalLamp(Device):
     def __init__(self, unit, name):
         super().__init__(name)
         self.unit = unit
-        self.value = 0
+        self.power = 'Off'
         print('SignalLamp has create')
 
-    def connect(self, request):
+    def connect(self):
         super().connect()
-        value = request.args.get('value', '')
-        try:
-            if value.lower() in ['on', 'off']:
-                self.power = value.lower()
-                self.value = 1 if value.lower() == 'on' else 0
-            else:
-                if not isinstance(value, str):
-                    raise ValueError
-                self.value = value
-                self.power = "on"  # Автоматически включаем при успешном получении значения
-            print(f'Connection with {self.name} success, power: {self.power}, value: {self.value}')
-            return json.dumps({'value': self.value, 'power': self.power})
-        except ValueError:
-            print(f'New value has not been accepted, need str but given {type(value)}')
-            return json.dumps({'error': 'Invalid data type, expected str'})
+        print(f'Connection with {self.name} success, power: {self.power}')
+        return json.dumps({'power': self.power})
+
+    def auto_power(self, parametr1, parametr2):
+        # Если хотя бы одно из значений роботов выходит за пределы от 0 до 100, включаем сигнальную лампу
+        if not (0 <= parametr1 <= 100) or not (0 <= parametr2 <= 100):
+            self.power = 'On'  # Включаем сигнальную лампу
+        else:
+            self.power = 'Off'  # Оставляем выключенной, если значения в пределах допустимого диапазона
+
 
 
 class Terminal(Device):
