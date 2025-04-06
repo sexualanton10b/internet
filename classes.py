@@ -35,6 +35,24 @@ class Logger:
             })
             print(f'Alert logged: {message}')
 
+    def get_robot_data(self, robot_name):
+        """Извлечь данные робота из коллекции DeviceStates."""
+        return self.db['DeviceStates'].find({'device': robot_name})
+
+    def calculate_stats(self, robot_name):
+        """Вычислить среднее и максимальное значения для робота."""
+        data = self.get_robot_data(robot_name)
+        values = []
+        for entry in data:
+            if 'state' in entry and 'value' in entry['state']:
+                values.append(entry['state']['value'])
+        if not values:
+            return {'average': 0, 'max': 0}
+        return {
+            'average': sum(values) / len(values),
+            'max': max(values)
+        }
+
 class Device(abc.ABC):
     def __init__(self, name):
         self.name = name

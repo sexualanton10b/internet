@@ -50,6 +50,16 @@ def connect_terminal():
     logger.insert_device_state(terminal.name, {'value': terminal.value, 'power': terminal.power})
     return response
 
+@app.route('/stats_robot1')
+def stats_robot1():
+    stats = logger.calculate_stats('Робот1')
+    return json.dumps(stats)
+
+@app.route('/stats_robot2')
+def stats_robot2():
+    stats = logger.calculate_stats('Робот2')
+    return json.dumps(stats)
+
 @app.route('/')
 def hello_world():
     return render_template('device_emulator2.html')
