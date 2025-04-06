@@ -61,44 +61,149 @@ function updateStats(robot, avgId, maxId) {
     });
 }
 
-function create_chart(robot, chartID){
-     const ctx = document.querySelector(chartID);
+function create_chart(robot, chartID) {
+    // 1. Получаем элемент canvas
+    const ctxElement = document.querySelector(chartID);
+    if (!ctxElement) {
+        console.error(`Element ${chartID} not found`);
+        return;
+    }
 
-        // Уничтожаем предыдущий график, если он существует
-        if (ctx.chart) {
-            ctx.chart.destroy();
-        }
+    // 2. Уничтожаем предыдущий график
+    if (ctxElement.chart) {
+        ctxElement.chart.destroy();
+    }
+
+    // 3. Показываем индикатор загрузки (с проверкой наличия container)
+    const container = ctxElement.closest('.chart-container');
+    if (container) container.classList.add('loading');
+
     $.ajax({
         type: 'GET',
-        url: `/get_chart_${robot}`,
+        url: `/get_chart_${robot}?_=${new Date().getTime()}`, // Добавляем timestamp против кэширования
         dataType: 'json',
-        contentType: 'application/json',
-        data: {},
-        success: function (response) {
-        // Определяем правильное название для графика
+        success: function(response) {
+            // 4. Скрываем индикатор загрузки
+            if (container) container.classList.remove('loading');
+
+            // 5. Проверяем полученные данные
+            if (!response || !response.time_data || !response.robot_data) {
+                console.error('Invalid data format received', response);
+                return;
+            }
+
+            // 6. Определяем заголовок графика
             const chartLabel = robot === 'robot1' ? 'Значения Робота 1' : 'Значения Робота 2';
-            new Chart(
-            document.querySelector(chartID), {
+
+            // 7. Создаем график (исправленная версия без дублирования)
+            ctxElement.chart = new Chart(ctxElement.getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: response['time_data'],
-                    datasets: [
-                        {
-                            label: chartLabel,
-                            data: response['robot_data'],
-                            cubicInterpolationMode: 'monotone',
-                            borderColor: 'rgb(75, 192, 192)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.1
-                        }
-                    ]
+                    labels: response.time_data,
+                    datasets: [{
+                        label: chartLabel,
+                        data: response.robot_data,
+                        cubicInterpolationMode: 'monotone',
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#3498db',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.2,
+                        fill: true
+                    }]
                 },
-                options: {}
-            }
-            );
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: "'Arial', sans-serif"
+                                },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            footerFont: {
+                                size: 12
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                color: '#7f8c8d'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                color: '#7f8c8d'
+                            },
+                            beginAtZero: false
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            if (container) container.classList.remove('loading');
+            console.error(`Error loading chart data for ${robot}:`, error);
         }
     });
+}
+// Функция для скачивания графика
+function downloadChart(chartID) {
+    const canvas = document.querySelector(chartID);
+    const link = document.createElement('a');
+    link.download = 'graph-' + new Date().toISOString().slice(0, 10) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
 }
 function refreshCharts() {
     create_chart('robot1', '.chart1');
@@ -110,13 +215,13 @@ function sendAllData() {
     send_data('smartcam', 'smartcam_value', 'smartcam_power');
     send_data('signallamp', 'signallamp_value', 'signallamp_power');
     send_data('terminal', 'terminal_value', 'terminal_power');
+    refreshCharts()
 }
 
 // Обновление статистики и графиков каждые 5 секунд
 setInterval(function() {
     updateStats('robot1', 'robot1_avg', 'robot1_max');
     updateStats('robot2', 'robot2_avg', 'robot2_max');
-    refreshCharts();
 }, 5000);
 
 // Инициализация статистики при загрузке страницы

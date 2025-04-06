@@ -9,49 +9,78 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-<div id="monitoring_data">
-    <h2>Robot 1</h2>
-    <input type="text" id="robot1_value" placeholder="Значение или on/off">
-    <label>Состояние:</label>
-    <input type="text" id="robot1_power" disabled placeholder="Состояние Robot 1">
+<div class="dashboard-layout">
+        <!-- Левая колонка - форма ввода -->
+        <div class="input-panel">
+            <div id="monitoring_data">
+                <h2>Robot 1</h2>
+                <input type="text" id="robot1_value" placeholder="Значение или on/off">
+                <label>Состояние:</label>
+                <input type="text" id="robot1_power" disabled placeholder="Состояние Robot 1">
 
-    <h2>Robot 2</h2>
-    <input type="text" id="robot2_value" placeholder="Значение или on/off">
-    <label>Состояние:</label>
-    <input type="text" id="robot2_power" disabled placeholder="Состояние Robot 2">
+                <h2>Robot 2</h2>
+                <input type="text" id="robot2_value" placeholder="Значение или on/off">
+                <label>Состояние:</label>
+                <input type="text" id="robot2_power" disabled placeholder="Состояние Robot 2">
 
-    <!-- После блоков с роботами -->
-    <h2>Статистика Robot 1</h2>
-    <label>Среднее значение:</label>
-    <input type="text" id="robot1_avg" readonly>
-    <label>Максимальное значение:</label>
-    <input type="text" id="robot1_max" readonly>
+                <h2>Статистика Robot 1</h2>
+                <label>Среднее значение:</label>
+                <input type="text" id="robot1_avg" readonly>
+                <label>Максимальное значение:</label>
+                <input type="text" id="robot1_max" readonly>
 
-    <h2>Статистика Robot 2</h2>
-    <label>Среднее значение:</label>
-    <input type="text" id="robot2_avg" readonly>
-    <label>Максимальное значение:</label>
-    <input type="text" id="robot2_max" readonly>
+                <h2>Статистика Robot 2</h2>
+                <label>Среднее значение:</label>
+                <input type="text" id="robot2_avg" readonly>
+                <label>Максимальное значение:</label>
+                <input type="text" id="robot2_max" readonly>
 
-    <h2>Smart Camera</h2>
-    <input type="text" id="smartcam_value" placeholder="Значение или on/off">
-    <label>Состояние:</label>
-    <input type="text" id="smartcam_power" disabled placeholder="Состояние Smart Camera">
+                <h2>Smart Camera</h2>
+                <input type="text" id="smartcam_value" placeholder="Значение или on/off">
+                <label>Состояние:</label>
+                <input type="text" id="smartcam_power" disabled placeholder="Состояние Smart Camera">
 
-    <h2>Signal Lamp</h2>
-    <label>Состояние:</label>
-    <input type="text" id="signallamp_power" disabled placeholder="Состояние Signal Lamp">
+                <h2>Signal Lamp</h2>
+                <label>Состояние:</label>
+                <input type="text" id="signallamp_power" disabled placeholder="Состояние Signal Lamp">
 
+                <h2>Terminal</h2>
+                <input type="text" id="terminal_value" placeholder="Значение или on/off">
+                <label>Состояние:</label>
+                <input type="text" id="terminal_power" disabled placeholder="Состояние Terminal">
 
-    <h2>Terminal</h2>
-    <input type="text" id="terminal_value" placeholder="Значение или on/off">
-    <label>Состояние:</label>
-    <input type="text" id="terminal_power" disabled placeholder="Состояние Terminal">
+                <button onclick="sendAllData()">Отправить</button>
+            </div>
+        </div>
 
-    <button onclick="sendAllData()">Отправить</button>
+        <!-- Правая колонка - графики -->
+        <div class="charts-panel">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">График Robot 1</h3>
+                    <div class="chart-actions">
+                        <button class="chart-btn" onclick="create_chart('robot1', '.chart1')">Обновить</button>
+                        <button class="chart-btn" onclick="downloadChart('.chart1')">Скачать</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas class="chart1"></canvas>
+                </div>
+            </div>
 
-    <canvas class="chart1"></canvas>
-    <canvas class="chart2"></canvas>
-</div>
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">График Robot 2</h3>
+                    <div class="chart-actions">
+                        <button class="chart-btn" onclick="create_chart('robot2', '.chart2')">Обновить</button>
+                        <button class="chart-btn" onclick="downloadChart('.chart2')">Скачать</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas class="chart2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
