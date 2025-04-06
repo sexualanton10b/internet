@@ -39,6 +39,15 @@ class Logger:
         """Извлечь данные робота из коллекции DeviceStates."""
         return self.db['DeviceStates'].find({'device': robot_name})
 
+    def robot_chart(self, robot_name):
+        cursor = self.db['DeviceStates'].find({'device': robot_name})
+        robot_data = []
+        time_data = []
+        for elem in cursor:
+            robot_data.append(elem['state']['value'])
+            time_data.append(elem['timestamp'])
+        return {'robot_data': robot_data, 'time_data': time_data}
+
     def calculate_stats(self, robot_name):
         """Вычислить среднее и максимальное значения для робота."""
         data = self.get_robot_data(robot_name)

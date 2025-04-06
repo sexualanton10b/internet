@@ -60,6 +60,16 @@ def stats_robot2():
     stats = logger.calculate_stats('Робот2')
     return json.dumps(stats)
 
+@app.route('/get_chart_robot1')
+def chart_robot1():
+    data = logger.robot_chart('Робот1')
+    return json.dumps(data)
+
+@app.route('/get_chart_robot2')
+def chart_robot2():
+    data = logger.robot_chart('Робот2')
+    return json.dumps(data)
+
 @app.route('/')
 def hello_world():
     return render_template('device_emulator2.html')

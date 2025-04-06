@@ -61,6 +61,49 @@ function updateStats(robot, avgId, maxId) {
     });
 }
 
+function create_chart(robot, chartID){
+     const ctx = document.querySelector(chartID);
+
+        // Уничтожаем предыдущий график, если он существует
+        if (ctx.chart) {
+            ctx.chart.destroy();
+        }
+    $.ajax({
+        type: 'GET',
+        url: `/get_chart_${robot}`,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: {},
+        success: function (response) {
+        // Определяем правильное название для графика
+            const chartLabel = robot === 'robot1' ? 'Значения Робота 1' : 'Значения Робота 2';
+            new Chart(
+            document.querySelector(chartID), {
+                type: 'line',
+                data: {
+                    labels: response['time_data'],
+                    datasets: [
+                        {
+                            label: chartLabel,
+                            data: response['robot_data'],
+                            cubicInterpolationMode: 'monotone',
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {}
+            }
+            );
+        }
+    });
+}
+function refreshCharts() {
+    create_chart('robot1', '.chart1');
+    create_chart('robot2', '.chart2');
+}
 function sendAllData() {
     send_data('robot1', 'robot1_value', 'robot1_power');
     send_data('robot2', 'robot2_value', 'robot2_power');
@@ -69,10 +112,11 @@ function sendAllData() {
     send_data('terminal', 'terminal_value', 'terminal_power');
 }
 
-// Обновление статистики каждые 5 секунд
+// Обновление статистики и графиков каждые 5 секунд
 setInterval(function() {
     updateStats('robot1', 'robot1_avg', 'robot1_max');
     updateStats('robot2', 'robot2_avg', 'robot2_max');
+    refreshCharts();
 }, 5000);
 
 // Инициализация статистики при загрузке страницы
