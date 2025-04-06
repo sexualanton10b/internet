@@ -2,6 +2,38 @@ import abc
 import random
 import json
 import re
+import pymongo
+import datetime
+
+class Logger:
+    def __init__(self, db_name):
+        self.client = pymongo.MongoClient('mongodb://localhost:27017/')
+        self.db = self.client[db_name]
+        self.last_device_states = {}
+        self.last_alert = None
+
+    def insert_device_state(self, device_name, state):
+        # Проверка на изменение состояния
+        if device_name not in self.last_device_states or state != self.last_device_states[device_name]:
+            self.last_device_states[device_name] = state
+            self.db['DeviceStates'].insert_one({
+                'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'device': device_name,
+                'state': state
+            })
+            print(f'State of {device_name} logged.')
+        else:
+            print(f'State of {device_name} unchanged.')
+
+    def insert_alert(self, message):
+        # Проверка на повторение алерта
+        if message != self.last_alert:
+            self.last_alert = message
+            self.db['Alerts'].insert_one({
+                'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'message': message
+            })
+            print(f'Alert logged: {message}')
 
 class Device(abc.ABC):
     def __init__(self, name):
